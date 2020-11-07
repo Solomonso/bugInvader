@@ -1,13 +1,11 @@
-// import {StartScene2} from "./src/Scenes/StartScene.js";  
-// import {GameScene2} from "./src/Scenes/GameScene.js"; 
 const config = {
     type: Phaser.AUTO,
     width: 710,
     height: 642,
-    physics: 
+    physics:
     {
         default: 'arcade',
-        arcade: 
+        arcade:
         {
             //higher number fall faster
             gravity: { y: 200 },
@@ -20,7 +18,7 @@ const config = {
         disableWebAudio: true
     }
      //added the physic plugin which is use for adding gravity to the game
-    
+
   };
-  
+
  const game = new Phaser.Game(config);

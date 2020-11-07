@@ -1,4 +1,4 @@
-//all global varibales used
+//all global variables used
 let gameState = {};
 let player;
 let bugs;
@@ -19,14 +19,14 @@ let playerScore;
 let shootSound;
 let dieSound;
 let gameOverSound;
- class GameScene extends Phaser.Scene 
+ class GameScene extends Phaser.Scene
 {
-    constructor() 
+    constructor()
     {
       super({key: 'GameScene'});
     }
 
-     //load all asset file to be used 
+     //load all asset file to be used
      preload()
      {
          const base = "image/";
@@ -43,14 +43,14 @@ let gameOverSound;
          this.load.audio('dieSound',"sound/death.wav");
          this.load.audio('gameOverSound',"sound/round_end.wav");
      }
-     
+
      //set all the game object to be used in the create
      create()
-     {   
+     {
          //add bg
          this.add.sprite(240, 320, "bg");
          player =  new Player(this,355,500,"player").setScale(.8);
-        
+
          //create bullets
          gameState.bullet = this.physics.add.group();
 
@@ -58,29 +58,29 @@ let gameOverSound;
          const platforms = this.physics.add.staticGroup();
          platforms.create(335,640,"platform");
          gameState.cursors = this.input.keyboard.createCursorKeys();
-         
+
          //player score
          playerScore = new Score();
          currentScore = playerScore.getScore;
          gameState.scoreText = this.add.text(325, 620, `Score: ${currentScore}`, {fontSize: '15px', fill: '#000000'});
-         
+
          //helps to detect collision btw the platform and player
          player.setCollideWorldBounds(true);
          this.physics.add.collider(player, platforms);
-        
+
          //create the group bugs
           gameState.bugs = this.physics.add.group();
           gameState.bugRed = this.physics.add.group();
          bugList = ['bugGreen','bugRed', 'bugYellow'];
-        
+
          //creating green bugs
          greenBug = () => {
             const xCoord = Math.random() * 640
             let randomBug = bugList[Math.floor(Math.random() * 1)]
             gameState.bugs.create(xCoord, 2, randomBug);
-            //gameState.bugs.rotation += 90;   
+            //gameState.bugs.rotation += 90;
         }
-    
+
         greenBugLoop = this.time.addEvent({
         delay: 1300,
         callback: greenBug,
@@ -94,7 +94,7 @@ let gameOverSound;
             const xCoord = Math.random() * 640
             let randomBug = bugList[1];
             gameState.bugRed.create(xCoord, 2, randomBug)
-        } 
+        }
 
         redBugLoop = this.time.addEvent({
             delay: 1300,
@@ -104,21 +104,21 @@ let gameOverSound;
     }
      //green bug collide with platform
    this.physics.add.collider(gameState.bugs, platforms,  (bug) => {
-     bug.destroy();	
+     bug.destroy();
       playerScore.setScore = 2;
       currentScore = playerScore.getScore;
      gameState.scoreText.setText(`Score: ${playerScore.getScore}`);
-     
+
     })
 
      //Red bug collide with platform
      this.physics.add.collider(gameState.bugRed, platforms,  (bug) => {
-        bug.destroy();	
+        bug.destroy();
         playerScore.setScore = 1;
         currentScore = playerScore.getScore;
         gameState.scoreText.setText(`Score: ${playerScore.getScore}`)
     })
-     
+
      //for bullets collide with green bug
  this.physics.add.collider(gameState.bugs,gameState.bullet, (bug, bullet)=> {
          bug.destroy();
@@ -127,7 +127,7 @@ let gameOverSound;
          currentScore = playerScore.getScore;
         gameState.scoreText.setText(`Score: ${playerScore.getScore}`)
      });
- 
+
      //for bullets collide  with red bug
      this.physics.add.collider(gameState.bugRed,gameState.bullet, (bug, bullet)=> {
             bug.destroy();
@@ -135,10 +135,10 @@ let gameOverSound;
             playerScore.setScore = 1;
             currentScore = playerScore.getScore;
             gameState.scoreText.setText(`Score: ${playerScore.getScore}`)
-                 
+
      });
 
-      
+
      //for green bug collide with player
      this.physics.add.collider(gameState.bugs,player, () => {
         greenBugLoop.destroy();
@@ -165,7 +165,7 @@ this.physics.add.collider(gameState.bugRed,player, () => {
              }
          }, 10000);
      }
-     
+
       //time counter for destroying red bug and move to yellow  bug scene
      timer2()
      {
@@ -173,10 +173,10 @@ this.physics.add.collider(gameState.bugRed,player, () => {
             console.log("time B " + seconds2);
             seconds2--;
             if (seconds2 < 0) {
-              redBugLoop.destroy();   
+              redBugLoop.destroy();
                 clearInterval(timer2);
                 this.moveToNextScene();
-                
+
             }
         }, 10000);
      }
@@ -184,7 +184,7 @@ this.physics.add.collider(gameState.bugRed,player, () => {
     //function for moving to next scene after surving green and red bug
     moveToNextScene()
     {
-        
+
         if(seconds2 < 0)
         {
             this.add.text(240, 345, 'Survived green and red bug\n Click to meet yellow bug', { fontSize: '18px', fill: '#000000' })
@@ -218,11 +218,11 @@ this.physics.add.collider(gameState.bugRed,player, () => {
     //yellow bug generate()
      generateYellowbug()
      {
-         yellowBug = () => 
+         yellowBug = () =>
          {
              const xCoord = Math.random() * 640
              let randomBug = bugList[2];
-             gameState.bugYellow.create(xCoord, 2, randomBug);   
+             gameState.bugYellow.create(xCoord, 2, randomBug);
          }
 
          yellowBugLoop = this.time.addEvent({
@@ -234,13 +234,13 @@ this.physics.add.collider(gameState.bugRed,player, () => {
 
      update()
      {
-       
+
          player.movePlayer();
-         if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space)) 
+         if (Phaser.Input.Keyboard.JustDown(gameState.cursors.space))
          {
             shootSound = this.sound.add("sound")
             shootSound.play();
             gameState.bullet.create(player.x, player.y, 'bullet').setGravityY(-400);
-         }  
-     }   
+         }
+     }
 }
